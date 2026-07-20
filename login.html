@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMEGA SYSTEM | Soluciones Tecnológicas de Alto Rendimiento</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/imagen/Recurso 4@4x-8.png" type="image/x-icon">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-nav">
+                <img src="/imagen/Recurso 13@4x-8.png" alt="OMEGA SYSTEM">
+                <div class="logo-texto">OMEGA <span>SYSTEM</span></div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html#inicio">Inicio</a></li>
+                    <li><a href="index.html#somos">Quiénes Somos</a></li>
+                    <li><a href="index.html#ofrecemos">Qué Ofrecemos</a></li>
+                    <li><a href="precios.html">Precios y Cotizaciones</a></li>
+                </ul>
+            </nav>
+            <div class="menu-hamburguesa">
+                <div class="linea"></div>
+                <div class="linea"></div>
+                <div class="linea"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══ LOGIN ═══ -->
+    <div class="login-wrapper" id="login-wrapper">
+        <div class="login-box">
+            <h2>🔐 Acceso restringido</h2>
+            <p class="login-sub">Ingresa tus credenciales para continuar</p>
+            <div class="login-input-group">
+                <input type="text" id="login-user" placeholder="Usuario" autocomplete="username">
+                <input type="password" id="login-pass" placeholder="Contraseña" autocomplete="current-password">
+                <div id="login-error" class="login-error" style="display:none;"></div>
+                <button id="login-btn" class="login-btn">Ingresar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ADMIN CONTENT ═══ -->
+    <div class="contenedor admin-contenedor" id="admin-content" style="display:none;">
+        <h1>Gestionar Trabajos</h1>
+        <p>Añade, edita o elimina los sitios web que se mostrarán en la sección de trabajos realizados.</p>
+    
+        <!-- Formulario para agregar/editar -->
+        <form id="work-form" class="work-form">
+            <input type="hidden" id="work-id">
+            <input type="text" id="work-nombre" placeholder="Nombre del Sitio Web" required>
+            <input type="url" id="work-url" placeholder="URL (ej: https://www.ejemplo.com)" required>
+            <button type="submit" id="work-submit-btn">Agregar Trabajo</button>
+            <button type="button" id="work-cancel-btn" style="display: none;">Cancelar Edición</button>
+        </form>
+        <div id="work-error" class="login-error" style="display:none; margin-top: 15px;"></div>
+    
+        <!-- Tabla de trabajos -->
+        <div class="works-table-container">
+            <table class="works-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>URL</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="works-tbody">
+                    <!-- Las filas se insertarán aquí con JS -->
+                </tbody>
+            </table>
+        </div>
+    
+        <button id="logout-btn" class="login-btn" style="margin-top: 40px; background-color: #c0392b;">Cerrar Sesión</button>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 <span>OMEGA SYSTEM</span>. Todos los derechos reservados. Tecnología al Límite.</p>
+    </footer>
+
+    <script>
+        const menuHamburguesa = document.querySelector('.menu-hamburguesa');
+        const nav = document.querySelector('nav');
+        menuHamburguesa.addEventListener('click', () => {
+            nav.classList.toggle('nav-active');
+        });
+
+        // ═══ ELEMENTOS ═══
+        const loginWrapper = document.getElementById('login-wrapper');
+        const adminContent = document.getElementById('admin-content');
+        const loginBtn = document.getElementById('login-btn');
+        const loginUser = document.getElementById('login-user');
+        const loginPass = document.getElementById('login-pass');
+        const loginError = document.getElementById('login-error');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // --- WORK CRUD ELEMENTS ---
+        const workForm = document.getElementById('work-form');
+        const workIdInput = document.getElementById('work-id');
+        const workNombreInput = document.getElementById('work-nombre');
+        const workUrlInput = document.getElementById('work-url');
+        const workSubmitBtn = document.getElementById('work-submit-btn');
+        const workCancelBtn = document.getElementById('work-cancel-btn');
+        const worksTbody = document.getElementById('works-tbody');
+        const workError = document.getElementById('work-error');
+
+        // ═══ LOGIN ═══
+        // URL del worker de autenticación, copiado de admin.html
+        const WORKER_URL = "https://floral-snow-3cfa.benjaminandresperaza.workers.dev";
+        
+        // Al cargar la página, revisar si ya hay una sesión activa
+        document.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('adminUser')) {
+                loginWrapper.style.display = 'none';
+                adminContent.style.display = 'block';
+                cargarWorks(); // Cargar trabajos si ya está logueado
+            }
+        });
+
+        async function intentarLogin() {
+            const usuario = loginUser.value.trim();
+            const contrasena = loginPass.value.trim();
+            const originalButtonText = loginBtn.textContent;
+
+            // Limpiar mensajes previos y deshabilitar botón
+            loginError.style.display = 'none';
+            loginBtn.textContent = "Verificando...";
+            loginBtn.disabled = true;
+
+            try {
+                // Enviar la petición al worker de autenticación
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, contrasena })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) { // Login exitoso
+                    sessionStorage.setItem('adminUser', usuario); // Guardar usuario para otras operaciones
+                    loginError.style.display = 'none';
+                    loginWrapper.style.display = 'none';
+                    adminContent.style.display = 'block';
+                    cargarWorks(); // Cargar trabajos al iniciar sesión
+                } else { // Error devuelto por el worker
+                    loginError.textContent = '❌ ' + (data.error || "Acceso denegado");
+                    loginError.style.display = 'block';
+                }
+
+            } catch (error) {
+                // Error de conexión o de red
+                loginError.textContent = "❌ Error de conexión. No se pudo verificar.";
+                loginError.style.display = 'block';
+            } finally {
+                // Restaurar botón
+                loginBtn.textContent = originalButtonText;
+                loginBtn.disabled = false;
+            }
+        }
+
+        loginBtn.addEventListener('click', intentarLogin);
+        loginPass.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); intentarLogin(); }
+        });
+        loginUser.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); loginPass.focus(); }
+        });
+
+        // ═══ LOGOUT ═══
+        logoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('adminUser');
+            adminContent.style.display = 'none';
+            loginWrapper.style.display = 'block';
+            // Limpiar campos
+            loginUser.value = '';
+            loginPass.value = '';
+        });
+
+        // ═══════════════════════════════════════════════
+        // CRUD DE TRABAJOS (WORKS)
+        // ═══════════════════════════════════════════════
+
+        const API_URL = '/api/works';
+
+        function mostrarWorkError(mensaje) {
+            workError.textContent = `❌ ${mensaje}`;
+            workError.style.display = 'block';
+        }
+
+        // Cargar y mostrar todos los trabajos
+        async function cargarWorks() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('No se pudo obtener la lista de trabajos.');
+                
+                const works = await response.json();
+                worksTbody.innerHTML = ''; // Limpiar tabla
+                
+                if (works.length === 0) {
+                    worksTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--texto-gris);">No hay trabajos para mostrar.</td></tr>';
+                } else {
+                    works.forEach(work => {
+                        const row = `
+                            <tr>
+                                <td>${work.nombre}</td>
+                                <td><a href="${work.url}" target="_blank">${work.url}</a></td>
+                                <td class="actions">
+                                    <button onclick="prepararEdicion(${work.id}, '${work.nombre}', '${work.url}')" class="btn-editar">Editar</button>
+                                    <button onclick="eliminarWork(${work.id})" class="btn-eliminar">Eliminar</button>
+                                </td>
+                            </tr>
+                        `;
+                        worksTbody.innerHTML += row;
+                    });
+                }
+            } catch (error) {
+                mostrarWorkError(error.message);
+            }
+        }
+
+        // Preparar el formulario para editar un trabajo
+        function prepararEdicion(id, nombre, url) {
+            workIdInput.value = id;
+            workNombreInput.value = nombre;
+            workUrlInput.value = url;
+            workSubmitBtn.textContent = 'Actualizar Trabajo';
+            workCancelBtn.style.display = 'inline-block';
+            window.scrollTo(0, workForm.offsetTop - 120); // Scroll hacia el form
+        }
+
+        // Cancelar la edición
+        workCancelBtn.addEventListener('click', () => {
+            workForm.reset();
+            workIdInput.value = '';
+            workSubmitBtn.textContent = 'Agregar Trabajo';
+            workCancelBtn.style.display = 'none';
+        });
+
+        // Manejar el envío del formulario (Crear o Actualizar)
+        workForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            workError.style.display = 'none';
+
+            const id = workIdInput.value;
+            const nombre = workNombreInput.value;
+            const url = workUrlInput.value;
+
+            const method = id ? 'PUT' : 'POST';
+            const endpoint = id ? `${API_URL}/${id}` : API_URL;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, url })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Ocurrió un error.');
+                }
+
+                workForm.reset();
+                workIdInput.value = '';
+                workSubmitBtn.textContent = 'Agregar Trabajo';
+                workCancelBtn.style.display = 'none';
+                await cargarWorks();
+
+            } catch (error) {
+                mostrarWorkError(error.message);
+            }
+        });
+
+        // Eliminar un trabajo
+        async function eliminarWork(id) {
+            if (!confirm('¿Estás seguro de que quieres eliminar este trabajo?')) return;
+            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            await cargarWorks();
+        }
+
+    </script>
+
+</body>
+</html>

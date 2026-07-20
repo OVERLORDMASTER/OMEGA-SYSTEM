@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMEGA SYSTEM | Soluciones Tecnológicas de Alto Rendimiento</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/imagen/Recurso 4@4x-8.png" type="image/x-icon">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-nav">
+                <img src="/imagen/Recurso 13@4x-8.png" alt="OMEGA SYSTEM">
+                <div class="logo-texto">OMEGA <span>SYSTEM</span></div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#inicio" class="active">Inicio</a></li>
+                    <li><a href="#somos">Quiénes Somos</a></li>
+                    <li><a href="#ofrecemos">Qué Ofrecemos</a></li>
+                    <li><a href="precios.html">Precios y Cotizaciones</a></li>
+                </ul>
+            </nav>
+            <div class="menu-hamburguesa">
+                <div class="linea"></div>
+                <div class="linea"></div>
+                <div class="linea"></div>
+            </div>
+        </div>
+    </header>
+
+    <section id="inicio">
+        <div class="hero">
+            <div class="hero-info">
+                <h1>Potenciamos tu entorno <span>Digital y Tecnológico</span></h1>
+                <p>En OMEGA SYSTEM desarrollamos software de alto nivel y optimizamos tu infraestructura de hardware para llevar el rendimiento de tus equipos al extremo absoluto.</p>
+            </div>
+            <div class="hero-imagen">
+                <img src="/imagen/Recurso 13@4x-8.png" alt="OMEGA SYSTEM Logo">
+            </div>
+        </div>
+    </section>
+
+    <section id="somos" style="background-color: var(--bg-secundario);">
+        <div class="section-container">
+            <h2 class="section-titulo">Quiénes Somos</h2>
+            <div class="somos-grid">
+                <div class="somos-texto">
+                    <p>Somos una microempresa tecnológica dedicada a ofrecer soluciones integrales de software y hardware. Nos apasiona la optimización y la creación de herramientas digitales que resuelvan problemas reales de manera eficaz.</p>
+                    <p>Ya sea que necesites una plataforma web moderna, una aplicación nativa eficiente, o rescatar y repotenciar los equipos de cómputo de tu negocio, en OMEGA SYSTEM combinamos precisión técnica y velocidad.</p>
+                </div>
+                <div class="somos-stats">
+                    <div class="stat-box">
+                        <h3>HARDWARE</h3>
+                        <p>Reparación de equipos</p>
+                        <p>Optimizaciones</p>
+                        <p>Asesoría y Gaming</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>SOFTWARE</h3>
+                        <p>Sistemas de facturación</p>
+                        <p>Administración</p>
+                        <p>Automatizaciones e información</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="ofrecemos">
+        <div class="section-container">
+            <h2 class="section-titulo">Qué Ofrecemos</h2>
+            <div class="servicios-grid">
+                <div class="tarjeta-servicio">
+                    <div class="icono-servicio">🌐</div>
+                    <h3>Desarrollo Web & Tiendas Online</h3>
+                    <p>Creamos páginas informativas para tu negocio y Tiendas Virtuales completas con carrito de compras para que vendas en línea de forma segura.</p>
+                </div>
+                <div class="tarjeta-servicio">
+                    <div class="icono-servicio">🤖</div>
+                    <h3>Sistemas de Gestión & Apps</h3>
+                    <p>Desarrollamos software de uso cotidiano y Sistemas de Gestión a la medida para Windows y Android. Ideales para controlar tus ventas.</p>
+                </div>
+                <div class="tarjeta-servicio">
+                    <div class="icono-servicio">🛠️</div>
+                    <h3>Reparación de Computadoras</h3>
+                    <p>Realizamos diagnósticos precisos para detectar y corregir fallas a nivel de hardware y software en laptops y PCs de cualquier gama.</p>
+                </div>
+                <div class="tarjeta-servicio">
+                    <div class="icono-servicio">⚡</div>
+                    <h3>Repotenciación & Ensamblaje</h3>
+                    <p>Llevamos el rendimiento de tu equipo al máximo. Nos encargamos del cambio estratégico de componentes clave para acelerar tus flujos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN REEMPLAZADA: Precios y Cotizaciones -->
+    <section id="precios-section" style="background-color: var(--bg-secundario); padding-bottom: 110px;">
+        <div class="section-container">
+            <h2 class="section-titulo">Precios y Cotizaciones</h2>
+
+            <div class="precios-cta-container">
+                <a href="precios.html" class="btn-primario">Ver Catálogo de Precios Detallado</a>
+            </div>
+        </div>
+
+        <div class="section-container" style="margin-top: 80px;">
+            <h2 class="section-titulo">trabajos realizados</h2>
+
+            <div class="precios-cta-container">
+                <a href="works.html" class="btn-primario">Ver trabajos</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 <span>OMEGA SYSTEM</span>. Todos los derechos reservados. Tecnología al Límite.</p>
+    </footer>
+
+    <script>
+        const menuHamburguesa = document.querySelector('.menu-hamburguesa');
+        const nav = document.querySelector('nav');
+        menuHamburguesa.addEventListener('click', () => {
+            nav.classList.toggle('nav-active');
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajos Realizados | OMEGA SYSTEM</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/imagen/Recurso 4@4x-8.png" type="image/x-icon">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-nav">
+                <img src="/imagen/Recurso 13@4x-8.png" alt="OMEGA SYSTEM">
+                <div class="logo-texto">OMEGA <span>SYSTEM</span></div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html#inicio">Inicio</a></li>
+                    <li><a href="index.html#somos">Quiénes Somos</a></li>
+                    <li><a href="index.html#ofrecemos">Qué Ofrecemos</a></li>
+                    <li><a href="precios.html">Precios y Cotizaciones</a></li>
+                </ul>
+            </nav>
+            <div class="menu-hamburguesa">
+                <div class="linea"></div>
+                <div class="linea"></div>
+                <div class="linea"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-precios">
+        <div class="encabezado-precios">
+            <h1>Trabajos <span>Realizados</span></h1>
+            <p>Explora una selección de nuestros proyectos y soluciones web implementadas para diversos clientes.</p>
+            <a href="index.html" class="btn-regresar">← Volver al Inicio</a>
+        </div>
+
+        <div id="works-grid" class="works-grid">
+            <!-- Los trabajos se cargarán aquí dinámicamente -->
+        </div>
+        <div id="works-loading" style="text-align: center; color: var(--texto-gris); padding: 40px 0;">Cargando trabajos...</div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 <span>OMEGA SYSTEM</span>. Todos los derechos reservados. Tecnología al Límite.</p>
+    </footer>
+
+    <script>
+        // Menú hamburguesa
+        const menuHamburguesa = document.querySelector('.menu-hamburguesa');
+        const nav = document.querySelector('nav');
+        menuHamburguesa.addEventListener('click', () => {
+            nav.classList.toggle('nav-active');
+        });
+
+        // Cargar trabajos
+        document.addEventListener('DOMContentLoaded', async () => {
+            const worksGrid = document.getElementById('works-grid');
+            const loadingIndicator = document.getElementById('works-loading');
+
+            try {
+                const response = await fetch('/api/works');
+                const works = await response.json();
+                
+                loadingIndicator.style.display = 'none';
+
+                if (works.length === 0) {
+                    worksGrid.innerHTML = '<p style="text-align: center; color: var(--texto-gris);">Actualmente no hay trabajos para mostrar.</p>';
+                    return;
+                }
+
+                works.forEach(work => {
+                    const workCard = `
+                        <a href="${work.url}" target="_blank" rel="noopener noreferrer" class="work-card">
+                            <div class="work-card-icon">🔗</div>
+                            <h3>${work.nombre}</h3>
+                            <p>Visitar sitio web</p>
+                        </a>
+                    `;
+                    worksGrid.innerHTML += workCard;
+                });
+
+            } catch (error) {
+                loadingIndicator.textContent = '❌ Error al cargar los trabajos. Intenta de nuevo más tarde.';
+            }
+        });
+    </script>
+
+</body>
+</html>
