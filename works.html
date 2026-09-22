@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trabajos Realizados | OMEGA SYSTEM</title>
+    <title>Sitios Web y Softwares Realizados | OMEGA SYSTEM</title>
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="/imagen/Recurso 4@4x-8.png" type="image/x-icon">
 </head>
-<body>
+
+<body class="portfolio-page">
 
     <header>
         <div class="nav-container">
             <a href="index.html" class="logo-nav">
                 <img src="/imagen/Recurso 13@4x-8.png" alt="OMEGA SYSTEM">
-                <div class="logo-texto">OMEGA <span>SYSTEM</span></div>
+                <div class="logo-texto">OMEGA<span>SYSTEM</span></div>
             </a>
             <nav>
                 <ul>
@@ -21,6 +23,7 @@
                     <li><a href="index.html#somos">Quiénes Somos</a></li>
                     <li><a href="index.html#ofrecemos">Qué Ofrecemos</a></li>
                     <li><a href="precios.html">Precios y Cotizaciones</a></li>
+                    <li><a href="works.html" class="active">Portafolio</a></li>
                 </ul>
             </nav>
             <div class="menu-hamburguesa">
@@ -33,20 +36,53 @@
 
     <main class="main-precios">
         <div class="encabezado-precios">
-            <h1>Trabajos <span>Realizados</span></h1>
-            <p>Explora una selección de nuestros proyectos y soluciones web implementadas para diversos clientes.</p>
+            <h1 id="page-main-title">Soluciones y <span>Desarrollos</span></h1>
+            <p>Explora nuestras plataformas web publicadas y catálogo de sistemas de software diseñados a medida.</p>
             <a href="index.html" class="btn-regresar">← Volver al Inicio</a>
         </div>
 
-        <div id="works-grid" class="works-grid">
-            <!-- Los trabajos se cargarán aquí dinámicamente -->
+        <!-- ═══ PESTAÑAS CONMUTABLES ═══ -->
+        <div class="portfolio-tabs">
+            <button class="tab-btn active" id="tab-websites" onclick="switchTab('websites')">
+                🌐 Sitios Web Realizados
+            </button>
+            <button class="tab-btn" id="tab-softwares" onclick="switchTab('softwares')">
+                💻 Variedades de Software
+            </button>
         </div>
-        <div id="works-loading" style="text-align: center; color: var(--texto-gris); padding: 40px 0;">Cargando trabajos...</div>
+
+        <!-- ═══ SECCIÓN 1: SITIOS WEB REALIZADOS ═══ -->
+        <div id="section-websites">
+            <div id="works-grid" class="works-grid"></div>
+            <div id="works-loading" style="text-align: center; color: var(--texto-gris); padding: 40px 0;">Cargando
+                sitios web...</div>
+        </div>
+
+        <!-- ═══ SECCIÓN 2: VARIEDADES DE SOFTWARE ═══ -->
+        <div id="section-softwares" style="display: none;">
+            <div id="softwares-grid" class="works-grid"></div>
+            <div id="softwares-loading" style="text-align: center; color: var(--texto-gris); padding: 40px 0;">Cargando
+                catálogo de softwares...</div>
+        </div>
 
     </main>
 
+    <!-- ═══ MODAL REPRODUCTOR DE VIDEO PERSONALIZADO ═══ -->
+    <div class="video-modal-overlay" id="video-modal">
+        <div class="video-modal-content">
+            <div class="video-modal-header">
+                <h3 id="modal-video-title">Demostración en Video</h3>
+                <button class="video-modal-close" onclick="closeVideoModal()">&times;</button>
+            </div>
+            <div class="video-modal-body" id="video-modal-body">
+                <div id="plyr-container"></div>
+            </div>
+        </div>
+    </div>
+
     <footer>
-        <p>&copy; 2026 <span>OMEGA SYSTEM</span>. Todos los derechos reservados. Tecnología al Límite.</p>
+        <p>&copy; 2026 <span>OMEGA SYSTEM</span>. Todos los derechos reservados. Tu Necesidad, Nuestro Código:
+            Soluciones a la Medida.</p>
     </footer>
 
     <script>
@@ -57,38 +93,216 @@
             nav.classList.toggle('nav-active');
         });
 
-        // Cargar trabajos
-        document.addEventListener('DOMContentLoaded', async () => {
+        // Conmutador de Pestañas
+        function switchTab(tab) {
+            const tabWebs = document.getElementById('tab-websites');
+            const tabSofts = document.getElementById('tab-softwares');
+            const secWebs = document.getElementById('section-websites');
+            const secSofts = document.getElementById('section-softwares');
+
+            if (tab === 'websites') {
+                tabWebs.classList.add('active');
+                tabSofts.classList.remove('active');
+                secWebs.style.display = 'block';
+                secSofts.style.display = 'none';
+            } else {
+                tabSofts.classList.add('active');
+                tabWebs.classList.remove('active');
+                secSofts.style.display = 'block';
+                secWebs.style.display = 'none';
+                loadSoftwares();
+            }
+        }
+
+        // ═══ REPRODUCTOR DE VIDEO HD (YOUTUBE NATIVO) ═══
+        function extractYouTubeId(url) {
+            if (!url) return null;
+            url = String(url).trim();
+            if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/|live\/))([a-zA-Z0-9_-]{11})/);
+            if (match) return match[1];
+            const iframeMatch = url.match(/src=["'](?:https?:)?\/\/(?:www\.)?(?:youtube\.com|youtube-nocookie\.com)\/embed\/([a-zA-Z0-9_-]{11})/);
+            if (iframeMatch) return iframeMatch[1];
+            return null;
+        }
+
+        // Abrir ventana grande de video con reproductor de YouTube en alta definición
+        function openVideoModal(youtubeUrl, softwareName) {
+            const ytId = extractYouTubeId(youtubeUrl);
+            if (!ytId) {
+                alert('Enlace de video no disponible o inválido.');
+                return;
+            }
+            document.getElementById('modal-video-title').textContent = `Demostración: ${softwareName}`;
+            const modalBody = document.getElementById('video-modal-body');
+
+            // Cargar iframe nativo de YouTube con forzado HD 1080p y todos los controles de Calidad y Velocidad habilitados
+            modalBody.innerHTML = `
+                <div class="video-iframe-wrapper">
+                    <iframe 
+                        src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&vq=hd1080&hd=1" 
+                        title="Demostración: ${softwareName.replace(/"/g, '&quot;')}"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            `;
+
+            document.getElementById('video-modal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Bloquear scroll de fondo
+        }
+
+        function closeVideoModal() {
+            const modalBody = document.getElementById('video-modal-body');
+            if (modalBody) {
+                modalBody.innerHTML = ''; // Detener reproducción inmediatamente al cerrar
+            }
+            document.getElementById('video-modal').classList.remove('active');
+            document.body.style.overflow = ''; // Restaurar scroll
+        }
+
+        document.getElementById('video-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('video-modal')) {
+                closeVideoModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeVideoModal();
+            }
+        });
+
+        // Cargar Sitios Web Realizados
+        async function loadWebsites() {
             const worksGrid = document.getElementById('works-grid');
             const loadingIndicator = document.getElementById('works-loading');
 
             try {
                 const response = await fetch('/api/works');
                 const works = await response.json();
-                
+
                 loadingIndicator.style.display = 'none';
 
                 if (works.length === 0) {
-                    worksGrid.innerHTML = '<p style="text-align: center; color: var(--texto-gris);">Actualmente no hay trabajos para mostrar.</p>';
+                    worksGrid.innerHTML = '<p style="text-align: center; color: var(--texto-gris); grid-column: 1/-1;">Actualmente no hay sitios web para mostrar.</p>';
                     return;
                 }
 
+                worksGrid.innerHTML = '';
                 works.forEach(work => {
+                    const logoHtml = work.imagen
+                        ? `<img src="${work.imagen}" alt="${work.nombre}" loading="lazy" decoding="async" onload="this.classList.add('loaded')">`
+                        : `<div class="work-logo-placeholder">🌐</div>`;
+
+                    const desc = work.descripcion
+                        ? work.descripcion
+                        : 'Sitio Web Oficial / Plataforma Online desarrollada por OMEGA SYSTEM.';
+
                     const workCard = `
-                        <a href="${work.url}" target="_blank" rel="noopener noreferrer" class="work-card">
-                            <div class="work-card-icon">🔗</div>
-                            <h3>${work.nombre}</h3>
-                            <p>Visitar sitio web</p>
-                        </a>
+                        <div class="work-card">
+                            <div class="work-logo-wrapper">
+                                ${logoHtml}
+                            </div>
+                            <div class="work-info">
+                                <h3>${work.nombre}</h3>
+                                <p>${desc}</p>
+                            </div>
+                            <a href="${work.url}" target="_blank" rel="noopener noreferrer" class="btn-visitar-rojo">
+                                Visitar Sitio Web ↗
+                            </a>
+                        </div>
                     `;
                     worksGrid.innerHTML += workCard;
                 });
 
+                // Activar imágenes que ya estén en caché del navegador
+                document.querySelectorAll('#works-grid img').forEach(img => {
+                    if (img.complete) img.classList.add('loaded');
+                });
+
             } catch (error) {
-                loadingIndicator.textContent = '❌ Error al cargar los trabajos. Intenta de nuevo más tarde.';
+                loadingIndicator.textContent = '❌ Error al cargar los sitios web.';
+            }
+        }
+
+        // Cargar Variedades de Software
+        let softwaresLoaded = false;
+        async function loadSoftwares() {
+            if (softwaresLoaded) return;
+            const softGrid = document.getElementById('softwares-grid');
+            const loadingIndicator = document.getElementById('softwares-loading');
+
+            try {
+                const response = await fetch('/api/softwares');
+                const softwares = await response.json();
+                softwaresLoaded = true;
+                loadingIndicator.style.display = 'none';
+
+                if (softwares.length === 0) {
+                    softGrid.innerHTML = '<p style="text-align: center; color: var(--texto-gris); grid-column: 1/-1;">Actualmente no hay softwares registrados en el catálogo.</p>';
+                    return;
+                }
+
+                softGrid.innerHTML = '';
+                softwares.forEach(soft => {
+                    const iconHtml = soft.imagen
+                        ? `<img src="${soft.imagen}" alt="${soft.nombre}" loading="lazy" decoding="async" onload="this.classList.add('loaded')">`
+                        : `<div class="software-icon-placeholder">💻</div>`;
+
+                    const ytId = extractYouTubeId(soft.youtube_url);
+                    let videoHtml = '';
+                    if (ytId) {
+                        videoHtml = `
+                            <div class="video-thumb-container" onclick="openVideoModal('${soft.youtube_url}', '${soft.nombre.replace(/'/g, "\\'")}')" title="Haz clic para ver el video en grande">
+                                <img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" alt="Video Demo ${soft.nombre}" class="video-thumb-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
+                                <div class="video-play-overlay">
+                                    <div class="video-play-btn-circle">▶</div>
+                                    <span class="video-play-text">Ver Demostración</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    const demoBtn = soft.demo_url
+                        ? `<a href="${soft.demo_url}" target="_blank" rel="noopener" class="btn-demo-link">Acceso / Demo Web ↗</a>`
+                        : '';
+
+                    const card = `
+                        <div class="software-card">
+                            <div class="software-icon-wrapper">
+                                ${iconHtml}
+                            </div>
+                            <div class="software-info">
+                                <h3>${soft.nombre}</h3>
+                                <p>${soft.descripcion || 'Solución de software profesional optimizada para alto rendimiento.'}</p>
+                            </div>
+                            ${videoHtml}
+                            ${demoBtn ? `<div class="software-actions">${demoBtn}</div>` : ''}
+                        </div>
+                    `;
+                    softGrid.innerHTML += card;
+                });
+
+                // Activar imágenes que ya estén en caché del navegador
+                document.querySelectorAll('#softwares-grid img').forEach(img => {
+                    if (img.complete) img.classList.add('loaded');
+                });
+
+            } catch (error) {
+                loadingIndicator.textContent = '❌ Error al cargar los softwares.';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadWebsites();
+            // Comprobar si hay hash #softwares en la URL
+            if (window.location.hash === '#softwares') {
+                switchTab('softwares');
             }
         });
     </script>
 
 </body>
+
 </html>

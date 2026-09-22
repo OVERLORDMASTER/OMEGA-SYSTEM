@@ -2,16 +2,13 @@
   "name": "omegasystem",
   "version": "1.0.0",
   "description": "OMEGA SYSTEM application",
-  "main": "new/server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node new/server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "engines": {
-    "node": ">=18.0.0 <22.0.0"
-  },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "better-sqlite3": "^9.4.0",

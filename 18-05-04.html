@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OMEGA SYSTEM | Soluciones Tecnológicas de Alto Rendimiento</title>
+    <title>Panel de Administración | OMEGASYSTEM</title>
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="/imagen/Recurso 4@4x-8.png" type="image/x-icon">
 </head>
+
 <body>
 
     <header>
         <div class="nav-container">
             <a href="index.html" class="logo-nav">
-                <img src="/imagen/Recurso 13@4x-8.png" alt="OMEGA SYSTEM">
-                <div class="logo-texto">OMEGA <span>SYSTEM</span></div>
+                <img src="/imagen/Recurso 13@4x-8.png" alt="OMEGASYSTEM">
+                <div class="logo-texto">OMEGA<span>SYSTEM</span></div>
             </a>
             <nav>
                 <ul>
-                    <li><a href="index.html#inicio">Inicio</a></li>
-                    <li><a href="index.html#somos">Quiénes Somos</a></li>
-                    <li><a href="index.html#ofrecemos">Qué Ofrecemos</a></li>
-                    <li><a href="precios.html">Precios y Cotizaciones</a></li>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="works.html">Ver Portafolio</a></li>
+                    <li><a href="precios.html">Precios</a></li>
                 </ul>
             </nav>
             <div class="menu-hamburguesa">
@@ -34,106 +35,258 @@
     <!-- ═══ LOGIN ═══ -->
     <div class="login-wrapper" id="login-wrapper">
         <div class="login-box">
-            <h2>🔐 Acceso restringido</h2>
+            <h2>🔐 Panel de Administración</h2>
             <p class="login-sub">Ingresa tus credenciales para continuar</p>
-            <div class="login-input-group">
-                <input type="text" id="login-user" placeholder="Usuario" autocomplete="username">
-                <input type="password" id="login-pass" placeholder="Contraseña" autocomplete="current-password">
+            <form id="login-form" class="login-input-group" onsubmit="return false;">
+                <input type="text" id="login-user" placeholder="Usuario (ej: admin)" autocomplete="username" autofocus
+                    required>
+                <div style="position: relative; width: 100%;">
+                    <input type="password" id="login-pass" placeholder="Contraseña" autocomplete="current-password"
+                        required style="width: 100%; padding-right: 40px; box-sizing: border-box;">
+                    <button type="button" id="toggle-pass-btn"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #888;"
+                        title="Mostrar / Ocultar contraseña">👁️</button>
+                </div>
                 <div id="login-error" class="login-error" style="display:none;"></div>
-                <button id="login-btn" class="login-btn">Ingresar</button>
-            </div>
+                <button type="submit" id="login-btn" class="login-btn">Ingresar al Panel</button>
+            </form>
         </div>
     </div>
 
     <!-- ═══ ADMIN CONTENT ═══ -->
-    <div class="contenedor admin-contenedor" id="admin-content" style="display:none;">
-        <h1>Gestionar Trabajos</h1>
-        <p>Añade, edita o elimina los sitios web que se mostrarán en la sección de trabajos realizados.</p>
-    
-        <!-- Formulario para agregar/editar -->
-        <form id="work-form" class="work-form">
-            <input type="hidden" id="work-id">
-            <input type="text" id="work-nombre" placeholder="Nombre del Sitio Web" required>
-            <input type="url" id="work-url" placeholder="URL (ej: https://www.ejemplo.com)" required>
-            <button type="submit" id="work-submit-btn">Agregar Trabajo</button>
-            <button type="button" id="work-cancel-btn" style="display: none;">Cancelar Edición</button>
-        </form>
-        <div id="work-error" class="login-error" style="display:none; margin-top: 15px;"></div>
-    
-        <!-- Tabla de trabajos -->
-        <div class="works-table-container">
-            <table class="works-table">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>URL</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="works-tbody">
-                    <!-- Las filas se insertarán aquí con JS -->
-                </tbody>
-            </table>
+    <div class="contenedor admin-contenedor" id="admin-content"
+        style="display:none; padding-top: 100px; max-width: 1100px; margin: 0 auto;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+            <div>
+                <h1>Administración de Desarrollos</h1>
+                <p style="color: var(--texto-gris);">Gestiona tus sitios web publicados y el catálogo de softwares con
+                    videos.</p>
+            </div>
+            <button id="logout-btn" class="login-btn"
+                style="background-color: #c0392b; padding: 10px 20px; width: auto; margin: 0;">Cerrar Sesión</button>
         </div>
-    
-        <button id="logout-btn" class="login-btn" style="margin-top: 40px; background-color: #c0392b;">Cerrar Sesión</button>
+
+        <!-- ═══ PESTAÑAS ADMIN ═══ -->
+        <div class="admin-tabs">
+            <button class="admin-tab-btn active" id="admin-tab-softwares" onclick="switchAdminTab('softwares')">
+                💻 Variedades de Software
+            </button>
+            <button class="admin-tab-btn" id="admin-tab-works" onclick="switchAdminTab('works')">
+                🌐 Sitios Web Realizados
+            </button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- SECCIÓN A: GESTIONAR SOFTWARES CON VIDEO YOUTUBE -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <div id="admin-sec-softwares">
+            <h2 style="font-size: 1.4rem; margin-bottom: 18px; color: var(--rojo-omega); font-weight: 700;">💻 Añadir /
+                Editar Software</h2>
+
+            <form id="soft-form" class="work-form" style="display: flex; flex-direction: column; gap: 18px;"
+                enctype="multipart/form-data">
+                <input type="hidden" id="soft-id">
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+                    <div>
+                        <label>Nombre del Software *</label>
+                        <input type="text" id="soft-nombre" placeholder="Ej: OmegaPOS - Sistema de Facturación"
+                            required>
+                    </div>
+                    <div>
+                        <label>Enlace de Video YouTube (Demo)</label>
+                        <input type="url" id="soft-youtube" placeholder="Ej: https://www.youtube.com/watch?v=XXXXX">
+                    </div>
+                </div>
+
+                <div>
+                    <label>Descripción del Software</label>
+                    <textarea id="soft-descripcion" rows="3"
+                        placeholder="Describe brevemente las funciones clave, ventajas y características..."></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start;">
+                    <div>
+                        <label>Ícono o Imagen del Software (Formato Cuadrado 1:1)</label>
+                        <input type="file" id="soft-imagen" accept="image/*">
+                        <small>Se recomienda subir una imagen cuadrada (ej. 500x500px).</small>
+                        <div class="image-preview-box" id="soft-preview-box" style="display:none; margin-top: 10px;">
+                            <img id="soft-preview-img" src="" alt="Preview">
+                        </div>
+                    </div>
+                    <div>
+                        <label>URL de Demo / Acceso Web (Opcional)</label>
+                        <input type="url" id="soft-demo" placeholder="https://demo.misistema.com">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 5px;">
+                    <button type="submit" id="soft-submit-btn"
+                        style="background: linear-gradient(135deg, var(--rojo-omega), #a30015); color: #fff; border: none; padding: 12px 28px; border-radius: 6px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(214,0,28,0.4); transition: transform 0.2s;">
+                        Guardar Software
+                    </button>
+                    <button type="button" id="soft-cancel-btn" onclick="resetSoftForm()"
+                        style="display: none; background-color: #334155; color: #fff; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        Cancelar Edición
+                    </button>
+                </div>
+            </form>
+            <div id="soft-msg" style="margin-top: 15px; font-weight: 600;"></div>
+
+            <!-- Tabla de Softwares -->
+            <div class="works-table-container">
+                <div style="padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); background: #121216;">
+                    <h3 style="margin: 0; font-size: 1.15rem; color: #ffffff;">Catálogo Actual de Softwares</h3>
+                </div>
+                <table class="works-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px; text-align: center;">Ícono</th>
+                            <th>Nombre y Descripción</th>
+                            <th style="width: 200px;">Video YouTube</th>
+                            <th style="width: 200px; text-align: right;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="softwares-tbody">
+                        <!-- Carga dinámica -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- SECCIÓN B: GESTIONAR SITIOS WEB REALIZADOS -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <div id="admin-sec-works" style="display: none;">
+            <h2 style="font-size: 1.4rem; margin-bottom: 18px; color: var(--rojo-omega); font-weight: 700;">🌐 Añadir /
+                Editar Sitio Web Realizado</h2>
+
+            <form id="work-form" class="work-form" style="display: flex; flex-direction: column; gap: 18px;"
+                enctype="multipart/form-data">
+                <input type="hidden" id="work-id">
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+                    <div>
+                        <label>Nombre del Sitio Web / Negocio *</label>
+                        <input type="text" id="work-nombre" placeholder="Ej: Inversiones Los Andes" required>
+                    </div>
+                    <div>
+                        <label>URL del Sitio Web (Enlace) *</label>
+                        <input type="url" id="work-url" placeholder="https://www.ejemplo.com" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label>Descripción del Sitio Web</label>
+                    <textarea id="work-descripcion" rows="3"
+                        placeholder="Describe brevemente el negocio o características del sitio..."></textarea>
+                </div>
+
+                <div>
+                    <label>Logo o Imagen del Negocio (Formato Cuadrado 1:1)</label>
+                    <input type="file" id="work-imagen" accept="image/*">
+                    <small>Se recomienda subir el logo en formato cuadrado (ej. 500x500px).</small>
+                    <div class="image-preview-box" id="work-preview-box" style="display:none; margin-top: 10px;">
+                        <img id="work-preview-img" src="" alt="Preview Logo">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 5px;">
+                    <button type="submit" id="work-submit-btn"
+                        style="background: linear-gradient(135deg, var(--rojo-omega), #a30015); color: #fff; border: none; padding: 12px 28px; border-radius: 6px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(214,0,28,0.4); transition: transform 0.2s;">
+                        Guardar Sitio Web
+                    </button>
+                    <button type="button" id="work-cancel-btn" onclick="resetWorkForm()"
+                        style="display: none; background-color: #334155; color: #fff; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        Cancelar Edición
+                    </button>
+                </div>
+            </form>
+            <div id="work-msg" style="margin-top: 15px; font-weight: 600;"></div>
+
+            <div class="works-table-container">
+                <div style="padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); background: #121216;">
+                    <h3 style="margin: 0; font-size: 1.15rem; color: #ffffff;">Sitios Web Registrados</h3>
+                </div>
+                <table class="works-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px; text-align: center;">Logo</th>
+                            <th>Nombre y Descripción</th>
+                            <th style="width: 250px;">URL del Sitio</th>
+                            <th style="width: 200px; text-align: right;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="works-tbody">
+                        <!-- Carga dinámica -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
-    
+
     <footer>
-        <p>&copy; 2026 <span>OMEGA SYSTEM</span>. Todos los derechos reservados. Tecnología al Límite.</p>
+        <p>&copy; 2026 <span>OMEGASYSTEM</span>. Todos los derechos reservados. Tu Necesidad, Nuestro Código: Soluciones
+            a la Medida.</p>
     </footer>
 
     <script>
+        // Hamburguesa
         const menuHamburguesa = document.querySelector('.menu-hamburguesa');
         const nav = document.querySelector('nav');
-        menuHamburguesa.addEventListener('click', () => {
-            nav.classList.toggle('nav-active');
-        });
+        menuHamburguesa.addEventListener('click', () => nav.classList.toggle('nav-active'));
 
-        // ═══ ELEMENTOS ═══
+        // ═══ SEGURIDAD & AUTENTICACIÓN (CLOUDFLARE WORKER) ═══
+        const WORKER_URL = "https://floral-snow-3cfa.benjaminandresperaza.workers.dev";
+
+        // Elementos de autenticación
         const loginWrapper = document.getElementById('login-wrapper');
         const adminContent = document.getElementById('admin-content');
+        const loginForm = document.getElementById('login-form');
         const loginBtn = document.getElementById('login-btn');
         const loginUser = document.getElementById('login-user');
         const loginPass = document.getElementById('login-pass');
         const loginError = document.getElementById('login-error');
         const logoutBtn = document.getElementById('logout-btn');
+        const togglePassBtn = document.getElementById('toggle-pass-btn');
 
-        // --- WORK CRUD ELEMENTS ---
-        const workForm = document.getElementById('work-form');
-        const workIdInput = document.getElementById('work-id');
-        const workNombreInput = document.getElementById('work-nombre');
-        const workUrlInput = document.getElementById('work-url');
-        const workSubmitBtn = document.getElementById('work-submit-btn');
-        const workCancelBtn = document.getElementById('work-cancel-btn');
-        const worksTbody = document.getElementById('works-tbody');
-        const workError = document.getElementById('work-error');
+        // Alternar visualización de contraseña
+        if (togglePassBtn) {
+            togglePassBtn.addEventListener('click', () => {
+                if (loginPass.type === 'password') {
+                    loginPass.type = 'text';
+                    togglePassBtn.textContent = '🙈';
+                } else {
+                    loginPass.type = 'password';
+                    togglePassBtn.textContent = '👁️';
+                }
+            });
+        }
 
-        // ═══ LOGIN ═══
-        // URL del worker de autenticación, copiado de admin.html
-        const WORKER_URL = "https://floral-snow-3cfa.benjaminandresperaza.workers.dev";
-        
-        // Al cargar la página, revisar si ya hay una sesión activa
+        // Revisar si ya hay una sesión activa al cargar la página
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('adminUser')) {
                 loginWrapper.style.display = 'none';
                 adminContent.style.display = 'block';
-                cargarWorks(); // Cargar trabajos si ya está logueado
+                showAdmin();
             }
         });
 
-        async function intentarLogin() {
+        async function intentarLogin(e) {
+            if (e) e.preventDefault();
             const usuario = loginUser.value.trim();
             const contrasena = loginPass.value.trim();
-            const originalButtonText = loginBtn.textContent;
+            const originalBtnText = loginBtn.textContent;
 
             // Limpiar mensajes previos y deshabilitar botón
             loginError.style.display = 'none';
-            loginBtn.textContent = "Verificando...";
+            loginBtn.textContent = "Verificando con Cloudflare...";
             loginBtn.disabled = true;
 
             try {
-                // Enviar la petición al worker de autenticación
+                // Enviar la petición de forma segura al Worker de Cloudflare
                 const response = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -143,28 +296,33 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) { // Login exitoso
-                    sessionStorage.setItem('adminUser', usuario); // Guardar usuario para otras operaciones
+                    sessionStorage.setItem('adminUser', usuario);
                     loginError.style.display = 'none';
                     loginWrapper.style.display = 'none';
                     adminContent.style.display = 'block';
-                    cargarWorks(); // Cargar trabajos al iniciar sesión
+                    showAdmin();
                 } else { // Error devuelto por el worker
-                    loginError.textContent = '❌ ' + (data.error || "Acceso denegado");
+                    loginError.textContent = '❌ ' + (data.error || data.message || "Acceso denegado. Credenciales incorrectas.");
                     loginError.style.display = 'block';
                 }
 
             } catch (error) {
                 // Error de conexión o de red
-                loginError.textContent = "❌ Error de conexión. No se pudo verificar.";
+                loginError.textContent = "❌ Error de conexión con el Worker de Cloudflare.";
                 loginError.style.display = 'block';
             } finally {
                 // Restaurar botón
-                loginBtn.textContent = originalButtonText;
+                loginBtn.textContent = originalBtnText;
                 loginBtn.disabled = false;
             }
         }
 
-        loginBtn.addEventListener('click', intentarLogin);
+        if (loginForm) {
+            loginForm.addEventListener('submit', intentarLogin);
+        } else {
+            loginBtn.addEventListener('click', intentarLogin);
+        }
+
         loginPass.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); intentarLogin(); }
         });
@@ -172,120 +330,407 @@
             if (e.key === 'Enter') { e.preventDefault(); loginPass.focus(); }
         });
 
-        // ═══ LOGOUT ═══
         logoutBtn.addEventListener('click', () => {
             sessionStorage.removeItem('adminUser');
+            sessionStorage.removeItem('omega_admin_user');
             adminContent.style.display = 'none';
             loginWrapper.style.display = 'block';
-            // Limpiar campos
             loginUser.value = '';
             loginPass.value = '';
+            loginError.style.display = 'none';
         });
 
-        // ═══════════════════════════════════════════════
-        // CRUD DE TRABAJOS (WORKS)
-        // ═══════════════════════════════════════════════
-
-        const API_URL = '/api/works';
-
-        function mostrarWorkError(mensaje) {
-            workError.textContent = `❌ ${mensaje}`;
-            workError.style.display = 'block';
+        function showAdmin() {
+            loginWrapper.style.display = 'none';
+            adminContent.style.display = 'block';
+            loadAdminSoftwares();
+            loadAdminWorks();
         }
 
-        // Cargar y mostrar todos los trabajos
-        async function cargarWorks() {
-            try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error('No se pudo obtener la lista de trabajos.');
-                
-                const works = await response.json();
-                worksTbody.innerHTML = ''; // Limpiar tabla
-                
-                if (works.length === 0) {
-                    worksTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--texto-gris);">No hay trabajos para mostrar.</td></tr>';
-                } else {
-                    works.forEach(work => {
-                        const row = `
-                            <tr>
-                                <td>${work.nombre}</td>
-                                <td><a href="${work.url}" target="_blank">${work.url}</a></td>
-                                <td class="actions">
-                                    <button onclick="prepararEdicion(${work.id}, '${work.nombre}', '${work.url}')" class="btn-editar">Editar</button>
-                                    <button onclick="eliminarWork(${work.id})" class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
-                        `;
-                        worksTbody.innerHTML += row;
-                    });
-                }
-            } catch (error) {
-                mostrarWorkError(error.message);
+        // Pestañas del Admin
+        function switchAdminTab(tab) {
+            const btnSofts = document.getElementById('admin-tab-softwares');
+            const btnWorks = document.getElementById('admin-tab-works');
+            const secSofts = document.getElementById('admin-sec-softwares');
+            const secWorks = document.getElementById('admin-sec-works');
+
+            btnSofts.classList.remove('active');
+            btnWorks.classList.remove('active');
+            secSofts.style.display = 'none';
+            secWorks.style.display = 'none';
+
+            if (tab === 'softwares') {
+                btnSofts.classList.add('active');
+                secSofts.style.display = 'block';
+            } else if (tab === 'works') {
+                btnWorks.classList.add('active');
+                secWorks.style.display = 'block';
             }
         }
 
-        // Preparar el formulario para editar un trabajo
-        function prepararEdicion(id, nombre, url) {
-            workIdInput.value = id;
-            workNombreInput.value = nombre;
-            workUrlInput.value = url;
-            workSubmitBtn.textContent = 'Actualizar Trabajo';
-            workCancelBtn.style.display = 'inline-block';
-            window.scrollTo(0, workForm.offsetTop - 120); // Scroll hacia el form
-        }
+        // ═══════════════════════════════════════════════
+        // LÓGICA DE SOFTWARES
+        // ═══════════════════════════════════════════════
+        let softwaresList = [];
+        const softForm = document.getElementById('soft-form');
+        const softId = document.getElementById('soft-id');
+        const softNombre = document.getElementById('soft-nombre');
+        const softDesc = document.getElementById('soft-descripcion');
+        const softYoutube = document.getElementById('soft-youtube');
+        const softDemo = document.getElementById('soft-demo');
+        const softImg = document.getElementById('soft-imagen');
+        const softPreviewBox = document.getElementById('soft-preview-box');
+        const softPreviewImg = document.getElementById('soft-preview-img');
+        const softSubmitBtn = document.getElementById('soft-submit-btn');
+        const softCancelBtn = document.getElementById('soft-cancel-btn');
+        const softMsg = document.getElementById('soft-msg');
+        const softTbody = document.getElementById('softwares-tbody');
 
-        // Cancelar la edición
-        workCancelBtn.addEventListener('click', () => {
-            workForm.reset();
-            workIdInput.value = '';
-            workSubmitBtn.textContent = 'Agregar Trabajo';
-            workCancelBtn.style.display = 'none';
+        softImg.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    softPreviewImg.src = re.target.result;
+                    softPreviewBox.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
         });
 
-        // Manejar el envío del formulario (Crear o Actualizar)
+        async function loadAdminSoftwares() {
+            try {
+                const res = await fetch('/api/softwares');
+                softwaresList = await res.json();
+                renderSoftwaresTable();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderSoftwaresTable() {
+            if (softwaresList.length === 0) {
+                softTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#888;">No hay softwares registrados.</td></tr>';
+                return;
+            }
+            softTbody.innerHTML = '';
+            softwaresList.forEach(s => {
+                const imgHtml = s.imagen
+                    ? `<img src="${s.imagen}" style="width:45px; height:45px; object-fit:cover; border-radius:6px;">`
+                    : `<span style="font-size:1.8rem;">💻</span>`;
+
+                const ytHtml = s.youtube_url
+                    ? `<a href="${s.youtube_url}" target="_blank" style="color:#ff4444; font-weight:600;">▶ Ver Video</a>`
+                    : '<span style="color:#666;">Sin video</span>';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align:center;">${imgHtml}</td>
+                    <td><strong style="font-size:1rem; color:#fff;">${s.nombre}</strong><br><small style="color:#94a3b8; line-height:1.4; display:block; margin-top:3px;">${s.descripcion ? (s.descripcion.length > 70 ? s.descripcion.substring(0, 70) + '...' : s.descripcion) : '<span style="color:#64748b;">Sin descripción</span>'}</small></td>
+                    <td>${ytHtml}</td>
+                    <td style="text-align: right;">
+                        <div class="table-actions">
+                            <button class="btn-editar" onclick="editSoftware(${s.id})">✏️ Editar</button>
+                            <button class="btn-eliminar" onclick="deleteSoftware(${s.id})">🗑️ Eliminar</button>
+                        </div>
+                    </td>
+                `;
+                softTbody.appendChild(tr);
+            });
+        }
+
+        // ═══ OPTIMIZACIÓN Y COMPRESIÓN AUTOMÁTICA DE IMÁGENES ═══
+        async function compressImageFile(file, maxWidth = 600, maxHeight = 600, quality = 0.85) {
+            if (!file || !file.type || !file.type.startsWith('image/')) return file;
+            // Preservar SVGs o GIFs animados sin alterar
+            if (file.type === 'image/svg+xml' || file.type === 'image/gif') return file;
+
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height = Math.round((height * maxWidth) / width);
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width = Math.round((width * maxHeight) / height);
+                                height = maxHeight;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob((blob) => {
+                            if (!blob || blob.size >= file.size) {
+                                resolve(file);
+                            } else {
+                                const newFileName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+                                const compressedFile = new File([blob], newFileName, {
+                                    type: 'image/webp',
+                                    lastModified: Date.now()
+                                });
+                                console.log(`⚡ Imagen optimizada: de ${(file.size / 1024).toFixed(1)}KB a ${(compressedFile.size / 1024).toFixed(1)}KB`);
+                                resolve(compressedFile);
+                            }
+                        }, 'image/webp', quality);
+                    };
+                    img.onerror = () => resolve(file);
+                };
+                reader.onerror = () => resolve(file);
+            });
+        }
+
+        softForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = softId.value;
+            const formData = new FormData();
+            formData.append('nombre', softNombre.value.trim());
+            formData.append('descripcion', softDesc.value.trim());
+            formData.append('youtube_url', softYoutube.value.trim());
+            formData.append('demo_url', softDemo.value.trim());
+
+            softSubmitBtn.disabled = true;
+            softSubmitBtn.textContent = 'Optimizando y guardando...';
+
+            if (softImg.files[0]) {
+                const optimizada = await compressImageFile(softImg.files[0], 600, 600, 0.85);
+                formData.append('imagen', optimizada);
+            }
+
+            try {
+                const url = id ? `/api/softwares/${id}` : '/api/softwares';
+                const method = id ? 'PUT' : 'POST';
+                const res = await fetch(url, { method, body: formData });
+                const result = await res.json();
+
+                if (res.ok) {
+                    softMsg.style.color = '#2ecc71';
+                    softMsg.textContent = id ? '✅ Software actualizado correctamente.' : '✅ Software agregado con éxito.';
+                    resetSoftForm();
+                    loadAdminSoftwares();
+                } else {
+                    softMsg.style.color = '#e74c3c';
+                    softMsg.textContent = `❌ ${result.error || 'Error al guardar.'}`;
+                }
+            } catch (err) {
+                softMsg.style.color = '#e74c3c';
+                softMsg.textContent = '❌ Error de conexión al guardar.';
+            } finally {
+                softSubmitBtn.disabled = false;
+                softSubmitBtn.textContent = id ? 'Actualizar Software' : 'Guardar Software';
+            }
+        });
+
+        window.editSoftware = (id) => {
+            const s = softwaresList.find(item => item.id === id);
+            if (!s) return;
+            softId.value = s.id;
+            softNombre.value = s.nombre;
+            softDesc.value = s.descripcion || '';
+            softYoutube.value = s.youtube_url || '';
+            softDemo.value = s.demo_url || '';
+            if (s.imagen) {
+                softPreviewImg.src = s.imagen;
+                softPreviewBox.style.display = 'flex';
+            } else {
+                softPreviewBox.style.display = 'none';
+            }
+            softSubmitBtn.textContent = 'Actualizar Software';
+            softCancelBtn.style.display = 'inline-block';
+            window.scrollTo({ top: softForm.offsetTop - 80, behavior: 'smooth' });
+        };
+
+        window.deleteSoftware = async (id) => {
+            if (!confirm('¿Seguro que deseas eliminar este software?')) return;
+            try {
+                const res = await fetch(`/api/softwares/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadAdminSoftwares();
+                } else {
+                    alert('Error al eliminar software.');
+                }
+            } catch (e) {
+                alert('Error al conectar con el servidor.');
+            }
+        };
+
+        function resetSoftForm() {
+            softForm.reset();
+            softId.value = '';
+            softPreviewBox.style.display = 'none';
+            softPreviewImg.src = '';
+            softSubmitBtn.textContent = 'Guardar Software';
+            softCancelBtn.style.display = 'none';
+            setTimeout(() => { softMsg.textContent = ''; }, 4000);
+        }
+
+        // ═══════════════════════════════════════════════
+        // LÓGICA DE SITIOS WEB (WORKS)
+        // ═══════════════════════════════════════════════
+        let worksList = [];
+        const workForm = document.getElementById('work-form');
+        const workId = document.getElementById('work-id');
+        const workNombre = document.getElementById('work-nombre');
+        const workUrl = document.getElementById('work-url');
+        const workDesc = document.getElementById('work-descripcion');
+        const workImg = document.getElementById('work-imagen');
+        const workPreviewBox = document.getElementById('work-preview-box');
+        const workPreviewImg = document.getElementById('work-preview-img');
+        const workSubmitBtn = document.getElementById('work-submit-btn');
+        const workCancelBtn = document.getElementById('work-cancel-btn');
+        const workMsg = document.getElementById('work-msg');
+        const worksTbody = document.getElementById('works-tbody');
+
+        workImg.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    workPreviewImg.src = re.target.result;
+                    workPreviewBox.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function loadAdminWorks() {
+            try {
+                const res = await fetch('/api/works');
+                worksList = await res.json();
+                renderWorksTable();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderWorksTable() {
+            if (worksList.length === 0) {
+                worksTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#888;">No hay sitios web registrados.</td></tr>';
+                return;
+            }
+            worksTbody.innerHTML = '';
+            worksList.forEach(w => {
+                const imgHtml = w.imagen
+                    ? `<img src="${w.imagen}" style="width:45px; height:45px; object-fit:cover; border-radius:6px;">`
+                    : `<span style="font-size:1.8rem;">🌐</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align:center;">${imgHtml}</td>
+                    <td><strong style="font-size:1rem; color:#fff;">${w.nombre}</strong><br><small style="color:#94a3b8; line-height:1.4; display:block; margin-top:3px;">${w.descripcion ? (w.descripcion.length > 70 ? w.descripcion.substring(0, 70) + '...' : w.descripcion) : '<span style="color:#64748b;">Sin descripción</span>'}</small></td>
+                    <td><a href="${w.url}" target="_blank" style="color:var(--rojo-omega); font-weight:600; text-decoration:none;">${w.url} ↗</a></td>
+                    <td style="text-align: right;">
+                        <div class="table-actions">
+                            <button class="btn-editar" onclick="editWork(${w.id})">✏️ Editar</button>
+                            <button class="btn-eliminar" onclick="deleteWork(${w.id})">🗑️ Eliminar</button>
+                        </div>
+                    </td>
+                `;
+                worksTbody.appendChild(tr);
+            });
+        }
+
         workForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            workError.style.display = 'none';
+            const id = workId.value;
+            const formData = new FormData();
+            formData.append('nombre', workNombre.value.trim());
+            formData.append('url', workUrl.value.trim());
+            formData.append('descripcion', workDesc.value.trim());
 
-            const id = workIdInput.value;
-            const nombre = workNombreInput.value;
-            const url = workUrlInput.value;
+            workSubmitBtn.disabled = true;
+            workMsg.style.display = 'block';
+            workMsg.style.color = '#fff';
+            workMsg.textContent = 'Optimizando y guardando imagen...';
 
-            const method = id ? 'PUT' : 'POST';
-            const endpoint = id ? `${API_URL}/${id}` : API_URL;
+            if (workImg.files[0]) {
+                const optimizada = await compressImageFile(workImg.files[0], 600, 600, 0.85);
+                formData.append('imagen', optimizada);
+            }
 
             try {
-                const response = await fetch(endpoint, {
-                    method: method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombre, url })
+                const url = id ? `/api/works/${id}` : '/api/works';
+                const method = id ? 'PUT' : 'POST';
+                const res = await fetch(url, {
+                    method,
+                    body: formData
                 });
+                const data = await res.json();
 
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Ocurrió un error.');
+                if (res.ok) {
+                    workMsg.style.color = '#2ecc71';
+                    workMsg.textContent = id ? '✅ Sitio web actualizado correctamente.' : '✅ Sitio web registrado con éxito.';
+                    setTimeout(() => { workMsg.style.display = 'none'; }, 4000);
+                    resetWorkForm();
+                    loadAdminWorks();
+                } else {
+                    workMsg.style.color = '#e74c3c';
+                    workMsg.textContent = `❌ ${data.error || 'Error al guardar el sitio web.'}`;
                 }
-
-                workForm.reset();
-                workIdInput.value = '';
-                workSubmitBtn.textContent = 'Agregar Trabajo';
-                workCancelBtn.style.display = 'none';
-                await cargarWorks();
-
-            } catch (error) {
-                mostrarWorkError(error.message);
+            } catch (err) {
+                workMsg.style.color = '#e74c3c';
+                workMsg.textContent = '❌ Error de conexión con el servidor.';
+            } finally {
+                workSubmitBtn.disabled = false;
+                workSubmitBtn.textContent = id ? 'Actualizar Sitio Web' : 'Guardar Sitio Web';
             }
         });
 
-        // Eliminar un trabajo
-        async function eliminarWork(id) {
-            if (!confirm('¿Estás seguro de que quieres eliminar este trabajo?')) return;
-            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-            await cargarWorks();
-        }
+        window.editWork = (id) => {
+            const w = worksList.find(item => item.id === id);
+            if (!w) return;
+            workId.value = w.id;
+            workNombre.value = w.nombre;
+            workUrl.value = w.url;
+            workDesc.value = w.descripcion || '';
+            if (w.imagen) {
+                workPreviewImg.src = w.imagen;
+                workPreviewBox.style.display = 'flex';
+            } else {
+                workPreviewBox.style.display = 'none';
+            }
+            workSubmitBtn.textContent = 'Actualizar Sitio Web';
+            workCancelBtn.style.display = 'inline-block';
+            window.scrollTo({ top: workForm.offsetTop - 120, behavior: 'smooth' });
+        };
 
+        window.deleteWork = async (id) => {
+            if (!confirm('¿Seguro que deseas eliminar este sitio web?')) return;
+            try {
+                const res = await fetch(`/api/works/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadAdminWorks();
+                }
+            } catch (e) {
+                alert('Error de conexión.');
+            }
+        };
+
+        function resetWorkForm() {
+            workForm.reset();
+            workId.value = '';
+            workPreviewBox.style.display = 'none';
+            workPreviewImg.src = '';
+            workSubmitBtn.textContent = 'Guardar Sitio Web';
+            workCancelBtn.style.display = 'none';
+        }
     </script>
 
 </body>
+
 </html>
